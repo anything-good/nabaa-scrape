@@ -1,0 +1,19 @@
+version: "3"
+services:
+  webscrape:
+    build: .
+    container_name: webscrape
+    restart: unless-stopped
+    labels:
+      traefik.enable: "true"
+      traefik.http.routers.webscrape-secure.entrypoints: "websecure"
+      traefik.http.routers.webscrape-secure.rule: "Host(`scrape.fnx.tools`)"
+      traefik.http.routers.webscrape-secure.tls: "true"
+      traefik.http.services.webscrape.loadbalancer.server.port: "3200"
+    networks:
+      - "frontend-network"
+
+networks:
+  frontend-network:
+    external: true
+    name: "frontend-network"

@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Laptops List Manager</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+
+</head>
+
+<body>
+    <form id="hidden-form" hidden>
+
+    </form>
+
+
+    <div class="container mt-5">
+        <h2 class="mb-4">Laptops List Manager</h2>
+        <form id="uploadForm" action="/upload" method="post" enctype="multipart/form-data" class="my-3">
+            <div class="form-group">
+                <label for="nameInput">Name</label>
+                <input type="text" class="form-control" id="nameInput" name="name" required>
+            </div>
+            <div class="custom-file">
+                <input required type="file" class="custom-file-input" name="csvfile" id="fileInput" accept=".csv">
+                <label class="custom-file-label" for="fileInput">Choose file</label>
+            </div>
+            <button type="submit" class="btn btn-primary mt-3">Upload</button>
+        </form>
+
+        <div class="mt-3" id="listsAccordion"></div>
+
+    </div>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
+    <script>
+        async function deleteList(listID) {
+            const response = fetch(`https://ali.elitestudents.link/api/laptop-lists/${listID}`, {
+                method: 'DELETE',
+                headers: {
+                    'authorization': 'Bearer rKtFskRVvRK9J1r0X5xMGnqU2NUvMC2JcOtXtLVt'
+                }
+            }).then(res => {
+                let form = document.getElementById('hidden-form');
+                form.submit();
+            });
+
+
+
+
+
+        }
+        document.addEventListener('DOMContentLoaded', async function () {
+            console.log('DOM loaded');
+
+
+
+            document.getElementById('uploadForm').addEventListener('submit', function (event) {
+                console.log('Form submitted');
+                event.preventDefault();
+                var formData = new FormData(document.getElementById('uploadForm'));
+                fetch('/upload', {
+                    method: 'POST',
+                    body: formData
+                }).then(response => response.json())
+                    .then(data => {
+                        console.log(data);
+                        if (data.status === 'success') {
+                            let form = document.getElementById('hidden-form');
+                            form.submit();
+                        } else {
+                            let form = document.getElementById('hidden-form');
+                            form.submit();
+                        }
+                    })
+            });
+
+            let lists = fetch('https://ali.elitestudents.link/api/laptop-lists', {
+                headers: { 'authorization': 'Bearer rKtFskRVvRK9J1r0X5xMGnqU2NUvMC2JcOtXtLVt' }
+            })
+                .then(response => response.json())
+                .then(lists => {
+                    const listsHTML = lists.map(list => `
+                        <div class="card mb-4">
+                            <div class="card-header" id="heading${list.id}">
+                                <h5 class="mb-0 row align-items-between">
+                                    <button class="col btn btn-link" data-toggle="collapse" data-target="#collapse${list.id}" aria-expanded="true" aria-controls="collapse${list.id}">
+                                        ${list.name}
+                                    </button>
+                                    <span class="col">Created at: ${new Date(list.created_at).toLocaleDateString()}</span>
+                                    <button onclick="deleteList('${list.id}')" class="me-1 btn btn-danger float-right">Delete</button>
+                                </h5>
+                            </div>
+                            <div id="collapse${list.id}" class="collapse" aria-labelledby="heading${list.id}" data-parent="#listsAccordion">
+                                    <table class="table table-striped">
+                                        <thead class="thead-dark">
+                                            <tr>
+                                                <th scope="col">name</th>
+                                                <th scope="col">price</th>
+                                                <th scope="col">wholesale</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            ${list.laptops.map(laptop => `
+                                                <tr>
+                                                    <td>${laptop.name}</td>
+                                                    <td>${laptop.public_price}</td>
+                                                    <td>${laptop.private_price}</td>
+                                                </tr>
+                                            `).join('')}
+                                        </tbody>
+                                    </table>
+                            </div>
+                        </div>
+                    `).join('');
+
+                    listsAccordion.innerHTML = listsHTML;
+
+                });
+        });
+
+        // Render lists
+    </script>
+</body>
+
+</html>

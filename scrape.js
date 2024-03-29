@@ -3,7 +3,7 @@ const puppeteer = require('puppeteer');
 module.exports = async function scrape(productName) {
   productName = productName.replace(/ /g, '+'); // This line replaces spaces with +
   console.log('scrape', productName);
-  const browser = await puppeteer.launch();
+  const browser = await puppeteer.launch({ executablePath: '/usr/bin/chromium-browser' });
   const page = await browser.newPage();
 
   // Go to the specified URL

@@ -1,15 +1,23 @@
-const puppeteer = require('puppeteer');
+puppeteer = require('puppeteer-core');
 
 module.exports = async function scrape(productName) {
   productName = productName.replace(/ /g, '+'); // This line replaces spaces with +
   console.log('scrape', productName);
+
+
+  // console.log('TRYING TO FETCH BROWSER')
+  const browserFetcher = puppeteer.createBrowserFetcher();
+  let revisionInfo = await browserFetcher.download('884014');
+
+
   const browser = await puppeteer.launch(
     {
-      executablePath: '/usr/bin/chromium-browser',
-      headless: false,
-      args: ["--no-sandbox"]
+      executablePath: revisionInfo.executablePath,
+      args: ['--no-sandbox', "--disabled-setupid-sandbox"]
     }
-  );
+  )
+
+
   const page = await browser.newPage();
 
   // Go to the specified URL
@@ -39,5 +47,3 @@ module.exports = async function scrape(productName) {
 
 
 };
-
-

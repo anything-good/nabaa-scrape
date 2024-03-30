@@ -82,6 +82,8 @@
             })
                 .then(response => response.json())
                 .then(lists => {
+                    // alert(lists[0].laptops[0].private_price.replace(/\D/g, ''))
+
                     const listsHTML = lists.map(list => `
                         <div class="card mb-4">
                             <div class="card-header" id="heading${list.id}">
@@ -100,6 +102,7 @@
                                                 <th scope="col">name</th>
                                                 <th scope="col">price</th>
                                                 <th scope="col">wholesale</th>
+                                                <th scope="col">difference </th>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -107,15 +110,16 @@
                                                 <tr>
                                                     <td>${laptop.name}</td>
                                                     <td>${laptop.public_price}</td>
-                                                    <td>${laptop.private_price}</td>
-                                                </tr>
-                                            `).join('')}
+                                                    <td>${laptop.private_price.replace('IQD', 'IQD <br>')}</td>
+                                                    <td>${(laptop.public_price.match(/IQD/g) || []).length > 1 ?
+                            (parseInt(lists[0].laptops[0].public_price.split('IQD')[0].replace(/\D/g, '')) - parseInt(laptop.private_price.replace(/\D/g, ''))).toLocaleString()
+                            : laptop.private_price} IQD</td>
+                                                </tr >`).join('')}
                                         </tbody>
                                     </table>
                             </div>
                         </div>
                     `).join('');
-
                     listsAccordion.innerHTML = listsHTML;
 
                 });

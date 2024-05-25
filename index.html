@@ -112,7 +112,7 @@
                                                     <td>${laptop.public_price}</td>
                                                     <td>${laptop.private_price.replace('IQD', 'IQD <br>')}</td>
                                                     <td>${(laptop.public_price.match(/IQD/g) || []).length > 1 ?
-                            (parseInt(lists[0].laptops[0].public_price.split('IQD')[0].replace(/\D/g, '')) - parseInt(laptop.private_price.replace(/\D/g, ''))).toLocaleString()
+                            (parseInt(laptop.public_price.split('IQD')[0].replace(/\D/g, '')) - parseInt(laptop.private_price.replace(/\D/g, ''))).toLocaleString()
                             : laptop.private_price} IQD</td>
                                                 </tr >`).join('')}
                                         </tbody>

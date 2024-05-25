@@ -5,10 +5,10 @@ module.exports = async function scrape(productName) {
 	console.log("scrape", modifiedProductName);
 
 	// console.log('TRYING TO FETCH BROWSER')
-	const browserFetcher = puppeteer.createBrowserFetcher();
-	const revisionInfo = await browserFetcher.download("884014");
+	// const browserFetcher = puppeteer.createBrowserFetcher();
+	// const revisionInfo = await browserFetcher.download("884014");
 
-	console.log("revisionInfo", revisionInfo);
+	// console.log("revisionInfo", revisionInfo);
 
 	const browser = await puppeteer.launch({
 		executablePath: "/usr/bin/chromium",

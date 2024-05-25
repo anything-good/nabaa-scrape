@@ -1,7 +1,7 @@
 version: "3"
 services:
   webscrape:
-    build: .
+    image: oven/bun
     container_name: webscrape
     restart: unless-stopped
     labels:
@@ -12,6 +12,20 @@ services:
       traefik.http.services.webscrape.loadbalancer.server.port: "3200"
     networks:
       - "frontend-network"
+    volumes:
+      - .:/temp  # Mount the current directory as /temp inside the container
+    working_dir: /temp  # Set the working directory to /temp inside the container
+    command: >
+      /bin/sh -c "\
+      apt-get update && \
+      apt-get install -y chromium nano git && \
+      rm -rf nabaa-scrape && \
+      git clone https://github.com/anything-good/nabaa-scrape.git && \
+      mv nabaa-scrape/* /app/ && \
+      cd /app && \
+      bun install && \
+      bun app.js \
+      "
 
 networks:
   frontend-network:

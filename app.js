@@ -34,9 +34,9 @@ app.post("/upload", upload.single("csvfile"), async (req, res) => {
 		.pipe(csvParser())
 		.on("data", async (row) => {
 			const privatePrice = row.price;
-			const { publicName, publicPrice } = await scrape(row.name);
+			const { publicName, publicPrice, publicImages } = await scrape(row.name);
 
-			await fetch(
+			const res = await fetch(
 				`https://ali.elitestudents.link/api/laptop-lists/${list.id}/laptops`,
 				{
 					method: "POST",
@@ -48,10 +48,13 @@ app.post("/upload", upload.single("csvfile"), async (req, res) => {
 						name: publicName === "not found" ? row.name : publicName,
 						public_price: publicPrice,
 						private_price: privatePrice,
+						images: publicImages,
 					}),
 				},
 			);
 
+			console.log("--------start---------");
+			console.log("res", res.body);
 			console.log("publicName", publicName);
 			console.log("publicPrice", publicPrice);
 			console.log("privatePrice", privatePrice);

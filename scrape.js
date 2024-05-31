@@ -41,13 +41,33 @@ module.exports = async function scrape(productName) {
 			".product-item__title",
 			(element) => element.textContent.trim(),
 		);
+
 		const publicPrice = await productElement.$eval(
 			".product-item__price-list",
 			(element) => element.textContent.trim(),
 		);
 
+		// Extract images
+
+		let publicImages = "";
+
+		publicImages += await productElement.$eval(
+			".product-item__primary-image",
+			(element) => element.srcset.split(",").reverse()[0],
+		);
+
+		publicImages += ",";
+
+		// currently only one primary image is being fetched
+		publicImages += await productElement.$eval(
+			".product-item__secondary-image",
+			(element) => element.srcset.split(",").reverse()[0],
+		);
+
+		console.log("publicImages", publicImages);
+
 		await browser.close();
-		return { publicName, publicPrice };
+		return { publicName, publicPrice, publicImages };
 	} catch (error) {
 		await browser.close();
 		return { error: error.message };
